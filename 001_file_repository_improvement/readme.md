@@ -4,7 +4,7 @@
 |------------|-----------------------------------------------------------------|
 | Title      | Improved file repository                                        |
 | Authors    | [Sebastiaan P. Huber](mailto:sebastiaan.huber@epfl.ch) (sphuber)|
-| Champions  | [Sebastiaan P. Huber](mailto:sebastiaan.huber@epfl.ch) (sphuber)|
+| Champions  | [Sebastiaan P. Huber](mailto:sebastiaan.huber@epfl.ch) (sphuber) [Leopold Talirz](mailto:leopold.talirz@epfl.ch) (ltalirz)|
 | Type       | S - Standard                                                    |
 | Created    | 18-Oct-2019                                                     |
 | Status     | submitted                                                       |
@@ -30,7 +30,7 @@ This interface can be used by nodes to store their files.
 ## Detailed Explanation
 
 ### Properly abstract the concept of the repository
-Currently the intregration of the repository is tightly coupled to the implementation of the ORM.
+Currently the integration of the repository is tightly coupled to the implementation of the ORM.
 This makes it difficult to provide different repository implementations.
 The first step then would be to abstract the repository concept and write a generic interface to list, create, get and delete objects in it.
 Since it is envisioned that solutions will be implemented that are not necessarily file system based, it is important that the interface does not implicitcly bake-in file-system-only concepts.
@@ -45,10 +45,11 @@ When storing an object for a node in the repository, it will first request the c
 When successful, the repository will return a key that is the unique identifier for the stored object.
 This key is then used to create an entry in the node repository index table to register its existence.
 
-### Fine controlled API to bundle and compress multiple objects of a node's repository
-Each node has a repository which can contain many files with arbitrary hierarchy.
+### API to control bundling and compression of multiple objects of a node's repository
+Each node can have associated files with arbitrary hierarchy.
 Often these files do not have to be accessed very often and so it may be more beneficial to bundle and compress the files.
 This will save space (and inodes in the case of a file system) at the cost that accessing any particular file now comes with the overhead of uncompressing and unpacking all files.
+For files stored on a remote machine, the cost of unpacking will be compensated by a reduced transfer time.
 Since for the most part repository files are not used very often, I propose that for the initial implementation we always bundle and compress.
 In the future, this behavior may be improved by allowing it to be configurable per node class or even instance.
 
